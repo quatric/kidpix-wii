@@ -1,0 +1,9 @@
+build/
+*.elf
+*.dol
+*.map
+dist/
+ref/
+assets/
+saves/
+portlibs/

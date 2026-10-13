@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  wii:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitppc:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git python3 make ca-certificates
+
+      - name: Build GRRLIB and controller libraries (libwiidrc, libwupc, libsicksaxis)
+        run: |
+          ./scripts/build_controller_portlibs.sh
+          ./scripts/build_grrlib.sh
+
+      - name: Build boot.dol
+        run: make
+
+      - name: Package (no game art is redistributed; see README for tools/prep_assets.sh)
+        run: |
+          mkdir -p out/apps/kidpix
+          cp boot.dol meta.xml out/apps/kidpix/
+          cp README.md out/apps/kidpix/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kidpix-wii
+          path: out/
