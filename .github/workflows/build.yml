@@ -2,8 +2,13 @@ name: Build
 
 on:
   push:
+    branches: ['**']
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   wii:
@@ -28,10 +33,21 @@ jobs:
       - name: Package (no game art is redistributed; see README for tools/prep_assets.sh)
         run: |
           mkdir -p out/apps/kidpix
-          cp boot.dol meta.xml out/apps/kidpix/
+          cp boot.dol meta.xml icon.png out/apps/kidpix/
           cp README.md out/apps/kidpix/
 
       - uses: actions/upload-artifact@v4
         with:
           name: kidpix-wii
           path: out/
+
+      - name: Zip release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          apt-get install -y --no-install-recommends zip
+          (cd out && zip -r ../kidpix-wii.zip apps)
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: kidpix-wii.zip
