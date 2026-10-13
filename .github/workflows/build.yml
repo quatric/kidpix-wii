@@ -30,11 +30,18 @@ jobs:
       - name: Build boot.dol
         run: make
 
-      - name: Package (no game art is redistributed; see README for tools/prep_assets.sh)
+      - name: Fetch jskidpix art and sounds (pinned commit)
         run: |
-          mkdir -p out/apps/kidpix
-          cp boot.dol meta.xml icon.png out/apps/kidpix/
-          cp README.md out/apps/kidpix/
+          git clone --quiet https://github.com/vikrum/kidpix /tmp/jskidpix
+          git -C /tmp/jskidpix checkout --quiet 99c67f3427d229f7db60b03dcf19df4d8c2a8ecf
+          tools/prep_assets.sh /tmp/jskidpix
+
+      - name: Package
+        run: |
+          mkdir -p out/apps/kidpix/saves
+          cp boot.dol meta.xml icon.png README.md LICENSE out/apps/kidpix/
+          cp -R assets out/apps/kidpix/assets
+          touch out/apps/kidpix/saves/.keep
 
       - uses: actions/upload-artifact@v4
         with:

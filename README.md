@@ -44,8 +44,9 @@ Needs devkitPro with devkitPPC and libogc, and the portlibs `libpng`, `libjpeg`,
     make                                     # boot.dol
     make dist                                # dist/apps/kidpix -> copy `apps` to the SD card
 
-The art and sounds are loaded at run time from `assets/` next to `boot.dol`; they are not part of this
-repository (CI therefore publishes only `boot.dol`, `meta.xml` and `icon.png`; tag `v*` makes a GitHub release zip). `src/textures_data.c`, `src/palettes_data.c` and
+The art and sounds are loaded at run time from `assets/` next to `boot.dol`. They are not stored in this
+repository: CI downloads them from a pinned jskidpix commit and bundles them, with `boot.dol`, `meta.xml` and
+`icon.png`, into the CI artifact and the GitHub release zip (tag `v*`). To install a release, unzip it and copy `apps` to the SD card. `src/textures_data.c`, `src/palettes_data.c` and
 `src/font_data.c` are generated from jskidpix by `tools/gen_*.{js,py}` and are committed.
 
 ## License
