@@ -14,7 +14,7 @@ include $(DEVKITPPC)/wii_rules
 
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	src
+SOURCES		:=	src libinput-wii/source
 DATA		:=
 INCLUDES	:=	src
 
@@ -26,7 +26,7 @@ LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map -Wl,-wrap,wiiuse_accept
 LIBS	:=	-lgrrlib -lwiidrc -lwupc -lsicksaxis -lpng -ljpeg -lfreetype -lbrotlidec -lbrotlicommon -lbz2 -lz \
             -lfat -lwiikeyboard -lwiiuse -lbte -lasnd -logc -lm
 
-LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii
+LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii $(CURDIR)/libinput-wii
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 

@@ -16,6 +16,8 @@ jobs:
     container: devkitpro/devkitppc:latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install build tools
         run: |
