@@ -41,8 +41,10 @@ Needs devkitPro with devkitPPC and libogc, and the portlibs `libpng`, `libjpeg`,
     ./scripts/build_controller_portlibs.sh   # libwiidrc, libwupc, libsicksaxis -> portlibs/ppc
     ./scripts/build_grrlib.sh                # GRRLIB -> portlibs/ppc
     tools/prep_assets.sh path/to/jskidpix    # copies the art/sounds into assets/
-    make                                     # boot.dol
+    make                                     # boot.dol and the compressed boot-xz.dol
     make dist                                # dist/apps/kidpix -> copy `apps` to the SD card
+
+`make` also writes `boot-xz.dol`, the same program packed into a self-extracting `.dol` a fraction of the size; `make dist` packages it as `boot.dol`. The first build downloads and builds [dolxz](https://github.com/FIX94/dolxz), which needs a host C compiler and liblzma (Debian/Ubuntu: `apt-get install liblzma-dev pkg-config`; macOS: `brew install xz`). `make NO_DOLXZ=1` skips this and uses the plain `.dol`.
 
 The art and sounds are loaded at run time from `assets/` next to `boot.dol`. They are not stored in this
 repository: CI downloads them from a pinned jskidpix commit and bundles them, with `boot.dol`, `meta.xml` and
