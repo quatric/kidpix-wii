@@ -11,6 +11,13 @@ Tools: Wacky Pencil, Line, Rectangle, Oval, Wacky Brush (28 brushes), Electric M
 Paint Can (21 textures), Eraser (13 erasers/effects), Alphabet, Rubber Stamps (1120 sprites),
 Moving Van and the Undo Guy.
 
+## Download
+
+Grab the latest build from the [latest release](../../releases/latest): `kidpix-wii.zip`. Every push to the main branch refreshes it, and tagged versions get their own entry on the [releases page](../../releases).
+
+1. Extract `kidpix-wii.zip` to the root of your SD card (or USB drive).
+2. Open Kid Pix for Wii from the Homebrew Channel.
+
 ## Controllers
 
 Same set as GlowWii, plus a USB mouse:
