@@ -1,5 +1,7 @@
 # Kid Pix for Wii
 
+**Version:** 0.2.0 · **Coder:** quatric
+
 A Wii homebrew port, written in C with [GRRLIB](https://github.com/GRRLIB/GRRLIB), of the
 [jskidpix](https://github.com/vikrum/kidpix) HTML/JS recreation of Kid Pix 1.0
 (with [KidPad](https://github.com/chrissotraidis/kidpad) as a second behaviour reference).
