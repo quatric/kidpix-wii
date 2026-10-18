@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <app version="1">
   <name>Kid Pix</name>
-  <coder>Kid Pix Wii port</coder>
+  <coder>quatric</coder>
   <version>0.2.0</version>
   <release_date>20261013000000</release_date>
   <short_description>Kid Pix for Wii</short_description>
