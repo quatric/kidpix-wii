@@ -2,7 +2,7 @@
 # Kid Pix for Wii
 #   ./scripts/build_controller_portlibs.sh   (once: libwiidrc / libwupc / libsicksaxis)
 #   ./scripts/build_grrlib.sh                (once: GRRLIB)
-#   make            -> boot.dol
+#   make            -> boot.dol and boot-xz.dol (dolxz-compressed)
 #   make dist       -> dist/apps/kidpix/ ready to copy to the SD card
 #---------------------------------------------------------------------------------
 .SUFFIXES:
@@ -28,6 +28,13 @@ LIBS	:=	-lgrrlib -lwiidrc -lwupc -lsicksaxis -lpng -ljpeg -lfreetype -lbrotlidec
 
 LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii $(CURDIR)/libinput-wii
 
+# The .dol that goes into the Homebrew Channel package.
+ifeq ($(NO_DOLXZ),1)
+BOOT_DOL	=	$(TARGET).dol
+else
+BOOT_DOL	=	$(TARGET)-xz.dol
+endif
+
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
@@ -51,11 +58,12 @@ $(BUILD):
 
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol dist
+	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT)-xz.dol dist
 
 dist: $(BUILD)
 	@rm -rf dist && mkdir -p dist/apps/kidpix
-	@cp boot.dol meta.xml dist/apps/kidpix/
+	@cp $(BOOT_DOL) dist/apps/kidpix/boot.dol
+	@cp meta.xml dist/apps/kidpix/
 	@[ ! -f icon.png ] || cp icon.png dist/apps/kidpix/
 	@cp -R assets dist/apps/kidpix/assets
 	@mkdir -p dist/apps/kidpix/saves
@@ -67,6 +75,16 @@ run:
 else
 
 DEPENDS	:=	$(OFILES:.o=.d)
+#---------------------------------------------------------------------------------
+# Self-extracting xz-compressed copy of the .dol (FIX94's dolxz, see
+# scripts/dolxz.sh). It is the default target; NO_DOLXZ=1 skips it.
+#---------------------------------------------------------------------------------
+ifneq ($(NO_DOLXZ),1)
+$(OUTPUT)-xz.dol: $(OUTPUT).dol
+	@echo compressing ... $(notdir $@)
+	@sh $(dir $(OUTPUT))scripts/dolxz.sh $< $@
+endif
+
 $(OUTPUT).dol: $(OUTPUT).elf
 $(OUTPUT).elf: $(OFILES)
 -include $(DEPENDS)
