@@ -7,6 +7,8 @@
 #include <fat.h>
 #include <ogcsys.h>
 #include <wiiuse/wpad.h>
+#include <input_wii.h>
+#include <wiiupdate.h>
 #include "tools_int.h"
 
 #define SUB_Y   CV_H
@@ -261,9 +263,33 @@ static void find_assets(const char *argv0)
         if (have_assets(list[i])) { snprintf(asset_root, sizeof asset_root, "%s", list[i]); return; }
 }
 
+/* Update popup: shown when a newer release is out; it has the controls while it is up. */
+static wiiupdate_popup upd;
+static int upd_open;
+
+static void draw_update_popup(void)
+{
+    const int w = 500, h = upd.progress >= 0 || upd.detail[0] ? 176 : 150;
+    const int x = (640 - w) / 2, y = (480 - h) / 2;
+    rect_fill(0, 0, 640, 480, 0x00000070);
+    rect_fill(x - 3, y - 3, w + 6, h + 6, 0x303030ff);
+    rect_fill(x, y, w, h, 0xfffcf4ff);
+    text_draw_center(320, y + 12, FONT_BIG, upd.title, 0x202020ff);
+    text_draw_center(320, y + 76, FONT_UI, upd.text, 0x303030ff);
+    int row = y + 104;
+    if (upd.progress >= 0) {
+        rect_fill(x + 50, row + 4, w - 100, 12, 0xc8c8c8ff);
+        rect_fill(x + 50, row + 4, (w - 100) * upd.progress / 100.0f, 12, 0x2f9e44ff);
+        row += 26;
+    } else if (upd.detail[0]) {
+        text_draw_center(320, row, FONT_UI, upd.detail, 0x1c6fc8ff);
+        row += 26;
+    }
+    text_draw_center(320, row + 8, FONT_UI, upd.hint, 0x606060ff);
+}
+
 int main(int argc, char **argv)
 {
-    (void)argc;
     gfx_init();
     fatInitDefault();
     find_assets(argv && argv[0] ? argv[0] : NULL);
@@ -286,9 +312,23 @@ int main(int argc, char **argv)
     tools_init();
     sync_page();
     ui_toast("Welcome to Kid Pix!");
+    WIIUPDATE_SetAppPath(argc > 0 ? argv[0] : NULL);
+    WIIUPDATE_Start("quatric", "kidpix-wii", APP_VERSION);
 
     for (;;) {
         input_update();
+        {
+            const int was_open = upd_open;
+            const int ust = WIIUPDATE_Popup(INPUT_ButtonsDown(), &upd);
+            if (ust == WIIUPDATE_POPUP_EXIT) exit(0);
+            upd_open = ust == WIIUPDATE_POPUP_OPEN;
+            if (upd_open || was_open) {
+                in.down = in.held = in.up = 0;
+                in.hotkey = 0;
+                in.key = 0;
+                in.wheel = 0;
+            }
+        }
         const float mx = in.x, my = in.y;
         const bool over = mx >= CV_X && my < CV_H;
         const int cx = (int)mx - CV_X, cy = (int)my - CV_Y;
@@ -374,6 +414,7 @@ int main(int argc, char **argv)
             text_draw_center(CV_X + CV_W / 2, 13, FONT_UI, toast, 0xffffffff);
         }
         if (menu_open) draw_menu();
+        if (upd_open) draw_update_popup();
         draw_cursor(mx, my);
         GRRLIB_Render();
     }

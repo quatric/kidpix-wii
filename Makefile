@@ -20,13 +20,18 @@ INCLUDES	:=	src
 
 CFLAGS	= -g -O2 -Wall -Wno-unused-function $(MACHDEP) $(INCLUDE) \
           -DHAVE_WIIDRC -DHAVE_WUPC -DHAVE_SICKSAXIS
+# Version for the update check: the release tag when CI builds one, else meta.xml
+APP_VERSION	?=	$(if $(filter refs/tags/%,$(GITHUB_REF)),$(GITHUB_REF_NAME),$(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' $(dir $(abspath $(firstword $(MAKEFILE_LIST))))meta.xml))
+CFLAGS	+=	-DAPP_VERSION=\"$(APP_VERSION)\"
 CXXFLAGS	=	$(CFLAGS)
 LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map -Wl,-wrap,wiiuse_accept
 
 LIBS	:=	-lgrrlib -lwiidrc -lwupc -lsicksaxis -lpng -ljpeg -lfreetype -lbrotlidec -lbrotlicommon -lbz2 -lz \
             -lfat -lwiikeyboard -lwiiuse -lbte -lasnd -logc -lm
+LIBS	:=	-lwiiupdate $(LIBS)
 
 LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii $(CURDIR)/libinput-wii
+LIBDIRS	+=	$(CURDIR)/libwiiupdate
 
 # The .dol that goes into the Homebrew Channel package.
 ifeq ($(NO_DOLXZ),1)
@@ -55,6 +60,11 @@ export LIBPATHS	:=	-L$(LIBOGC_LIB) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+$(BUILD): libwiiupdate-lib
+.PHONY: libwiiupdate-lib
+libwiiupdate-lib:
+	@$(MAKE) --no-print-directory -C $(CURDIR)/libwiiupdate
 
 clean:
 	@echo clean ...
