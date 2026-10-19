@@ -1,7 +1,7 @@
 /*
  * Unified input: Wiimote (IR pointer, Nunchuk), Classic Controller, GameCube pad,
  * Wii U Pro Controller, Wii U GamePad, DualShock 3, USB mouse and USB keyboard
- * all drive one cursor + one button mask. The devices come from libinput-wii.
+ * all drive one cursor + one button mask. The devices come from libwiiinput.
  */
 #include <stdio.h>
 #include <ogcsys.h>

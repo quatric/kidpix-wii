@@ -14,7 +14,7 @@ include $(DEVKITPPC)/wii_rules
 
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	src libinput-wii/source
+SOURCES		:=	src libwiiinput/source
 DATA		:=
 INCLUDES	:=	src
 
@@ -30,7 +30,7 @@ LIBS	:=	-lgrrlib -lwiidrc -lwupc -lsicksaxis -lpng -ljpeg -lfreetype -lbrotlidec
             -lfat -lwiikeyboard -lwiiuse -lbte -lasnd -logc -lm
 LIBS	:=	-lwiiupdate $(LIBS)
 
-LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii $(CURDIR)/libinput-wii
+LIBDIRS	:=	$(CURDIR)/portlibs/ppc $(DEVKITPRO)/portlibs/ppc $(DEVKITPRO)/portlibs/wii $(CURDIR)/libwiiinput
 LIBDIRS	+=	$(CURDIR)/libwiiupdate
 
 # The .dol that goes into the Homebrew Channel package.
