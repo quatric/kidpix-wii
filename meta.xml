@@ -2,7 +2,7 @@
 <app version="1">
   <name>Kid Pix</name>
   <coder>quatric</coder>
-  <version>0.3.0</version>
+  <version>0.3.1</version>
   <release_date>20261020000000</release_date>
   <short_description>Kid Pix for Wii</short_description>
   <long_description>A C / GRRLIB port of the jskidpix Kid Pix recreation. Wiimote, Nunchuk, Classic Controller, GameCube pad, Wii U Pro / GamePad, DualShock 3, USB mouse and keyboard supported. Drawings are saved as PNG to /apps/kidpix/saves.</long_description>
